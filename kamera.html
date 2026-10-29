@@ -100,16 +100,29 @@
       }
     }
 
-    window.addEventListener('message', async event => {
-  if (event.origin !== PARENT_ORIGIN) {
-    statusBox.textContent =
-      'Pesan ditolak: asal pengirim tidak sesuai.';
-    return;
-  }
+   
+function isTrustedParentOrigin(origin) {
+  try {
+    const url = new URL(origin);
+    const host = url.hostname;
 
-  if (event.source !== window.opener) {
+    return url.protocol === 'https:' && (
+      host === 'script.google.com' ||
+      host === 'script.googleusercontent.com' ||
+      host.endsWith('-script.googleusercontent.com') ||
+      host.endsWith('.script.googleusercontent.com')
+    );
+  } catch (error) {
+    return false;
+  }
+}
+
+window.addEventListener('message', async event => {
+  if (event.source !== window.opener) return;
+
+  if (!isTrustedParentOrigin(event.origin)) {
     statusBox.textContent =
-      'Pesan ditolak: jendela pembuka tidak sesuai.';
+      'Pesan ditolak dari alamat: ' + event.origin;
     return;
   }
 
@@ -119,6 +132,7 @@
     await openCamera();
   }
 });
+
 
     captureButton.addEventListener('click', () => {
       if (!stream || !video.videoWidth) {
@@ -165,9 +179,9 @@
       }
 
       window.opener.postMessage({
-        type: 'ABSENSI_PHOTO_CAPTURED',
-        photo: photoData
-      }, PARENT_ORIGIN);
+  type: 'ABSENSI_PHOTO_CAPTURED',
+  photo: photoData
+}, '*');
 
       sendButton.disabled = true;
       statusBox.textContent =
