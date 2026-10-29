@@ -101,14 +101,24 @@
     }
 
     window.addEventListener('message', async event => {
-      
-      if (event.source !== window.opener) return;
+  if (event.origin !== PARENT_ORIGIN) {
+    statusBox.textContent =
+      'Pesan ditolak: asal pengirim tidak sesuai.';
+    return;
+  }
 
-      if (event.data?.type === 'ABSENSI_START_CAMERA') {
-        connected = true;
-        await openCamera();
-      }
-    });
+  if (event.source !== window.opener) {
+    statusBox.textContent =
+      'Pesan ditolak: jendela pembuka tidak sesuai.';
+    return;
+  }
+
+  if (event.data?.type === 'ABSENSI_START_CAMERA') {
+    connected = true;
+    statusBox.textContent = 'Perintah diterima. Membuka kamera...';
+    await openCamera();
+  }
+});
 
     captureButton.addEventListener('click', () => {
       if (!stream || !video.videoWidth) {
@@ -157,7 +167,7 @@
       window.opener.postMessage({
         type: 'ABSENSI_PHOTO_CAPTURED',
         photo: photoData
-      }, *);
+      }, PARENT_ORIGIN);
 
       sendButton.disabled = true;
       statusBox.textContent =
