@@ -4,45 +4,424 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173b73">
   <title>Kamera Selfie - SMKN 9 Wajo</title>
+
   <style>
+    :root {
+      --brand: #2457c5;
+      --brand-dark: #173b73;
+      --brand-soft: #eff6ff;
+      --ink: #172033;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --page: #f4f7fc;
+      --white: #ffffff;
+      --radius: 20px;
+      --shadow: 0 12px 35px rgba(15, 23, 42, 0.07);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      max-width: 520px;
-      margin: 24px auto;
-      padding: 16px;
-      line-height: 1.5;
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px 16px;
+      background:
+        radial-gradient(ellipse at top, #e5efff 0%, transparent 48%),
+        var(--page);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, "Segoe UI",
+        Roboto, Arial, sans-serif;
+      line-height: 1.6;
     }
-    button {
-      padding: 12px 16px;
-      margin: 6px 4px 6px 0;
-      cursor: pointer;
+
+    [hidden] {
+      display: none !important;
     }
-    button:disabled { opacity: .5; }
-    video, img {
+
+    .app {
       width: 100%;
-      border-radius: 12px;
-      background: #222;
-      margin-top: 12px;
+      max-width: 520px;
+      margin: 0 auto;
     }
-    #status { white-space: pre-wrap; }
+
+    .school-header {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .school-logo {
+      width: 62px;
+      height: 62px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 12px;
+      border-radius: 19px;
+      background: linear-gradient(
+        135deg, var(--brand-dark), var(--brand)
+      );
+      color: white;
+      font-size: 25px;
+      font-weight: 800;
+      box-shadow: 0 8px 20px rgba(36, 87, 197, 0.2);
+    }
+
+    .school-name {
+      margin: 0;
+      color: var(--brand-dark);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+    }
+
+    h1 {
+      margin: 5px 0 4px;
+      font-size: clamp(1.5rem, 5vw, 1.9rem);
+      line-height: 1.25;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .camera-card {
+      overflow: hidden;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .card-heading {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid #eef2f7;
+    }
+
+    .heading-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .camera-icon {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      font-size: 22px;
+    }
+
+    .card-heading h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 750;
+    }
+
+    .card-heading p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .camera-content {
+      padding: 18px;
+    }
+
+    #status {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 0 0 16px;
+      padding: 13px 14px;
+      border: 1px solid #bfdbfe;
+      border-radius: 13px;
+      background: #eff6ff;
+      color: #1e40af;
+      font-size: 0.88rem;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      flex-shrink: 0;
+      margin-top: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .media-frame {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: #101827;
+      border: 1px solid #dbe3ef;
+    }
+
+    .media-frame video,
+    .media-frame img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #101827;
+    }
+
+    .media-placeholder {
+      padding: 20px;
+      text-align: center;
+      color: #cbd5e1;
+    }
+
+    .placeholder-icon {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 2.5rem;
+    }
+
+    .media-placeholder p {
+      margin: 0;
+      font-size: 0.85rem;
+    }
+
+    .hint {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-align: center;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 16px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      background: var(--brand);
+      color: white;
+      font: inherit;
+      font-size: 0.94rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition:
+        background 0.18s ease,
+        transform 0.18s ease,
+        box-shadow 0.18s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:hover:not(:disabled) {
+      background: #1d4ed8;
+      box-shadow: 0 5px 14px rgba(36, 87, 197, 0.18);
+    }
+
+    button:active:not(:disabled) {
+      transform: scale(0.985);
+    }
+
+    button:focus-visible {
+      outline: 3px solid #93c5fd;
+      outline-offset: 3px;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #334155;
+      border-color: #cbd5e1;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: #f8fafc;
+      color: var(--ink);
+    }
+
+    .btn-success {
+      background: #15803d;
+    }
+
+    .btn-success:hover:not(:disabled) {
+      background: #166534;
+      box-shadow: 0 5px 14px rgba(21, 128, 61, 0.2);
+    }
+
+    .btn-danger {
+      background: #fff;
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: #fef2f2;
+      box-shadow: none;
+    }
+
+    .card-footer {
+      padding: 14px 18px;
+      border-top: 1px solid #eef2f7;
+      background: #fbfcfe;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.76rem;
+    }
+
+    .card-footer strong {
+      color: #475569;
+    }
+
+    @media (min-width: 420px) {
+      .actions {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      #send {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 380px) {
+      body {
+        padding: 18px 11px;
+      }
+
+      .card-heading {
+        padding: 16px;
+      }
+
+      .camera-content {
+        padding: 13px;
+      }
+
+      .school-logo {
+        width: 54px;
+        height: 54px;
+      }
+
+      .media-frame {
+        aspect-ratio: 3 / 4;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        transition: none !important;
+      }
+    }
   </style>
 </head>
+
 <body>
-  <h1>Foto Selfie Siswa</h1>
-  <p>SMKN 9 Wajo</p>
-  <p id="status">Menunggu halaman absensi terhubung...</p>
+  <main class="app">
 
-  <video id="video" autoplay muted playsinline hidden></video>
-  <img id="preview" alt="Pratinjau foto selfie" hidden>
-  <canvas id="canvas" hidden></canvas>
+    <header class="school-header">
+      <div class="school-logo" aria-hidden="true">9</div>
+      <p class="school-name">SMK NEGERI 9 WAJO</p>
+      <h1>Foto Selfie Siswa</h1>
+      <p class="subtitle">
+        Dokumentasi foto untuk absensi siswa
+      </p>
+    </header>
 
-  <div>
-    <button id="capture" hidden>Ambil Foto</button>
-    <button id="retake" hidden>Ulangi Foto</button>
-    <button id="send" hidden>Kirim Foto ke Absensi</button>
-    <button id="close">Tutup Kamera</button>
-  </div>
+    <section class="camera-card">
+      <div class="card-heading">
+        <div class="heading-row">
+          <div class="camera-icon" aria-hidden="true">📸</div>
+          <div>
+            <h2>Kamera Absensi</h2>
+            <p>Pastikan wajah terlihat jelas sebelum mengambil foto.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="camera-content">
+        <div id="status" role="status" aria-live="polite">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="statusText">
+            Menunggu halaman absensi terhubung...
+          </span>
+        </div>
+
+        <div class="media-frame">
+          <div id="placeholder" class="media-placeholder">
+            <span class="placeholder-icon" aria-hidden="true">📷</span>
+            <p>Area kamera akan muncul di sini.</p>
+          </div>
+
+          <video
+            id="video"
+            autoplay
+            muted
+            playsinline
+            hidden
+            aria-label="Tampilan kamera depan"
+          ></video>
+
+          <img
+            id="preview"
+            alt="Pratinjau foto selfie"
+            hidden
+          >
+        </div>
+
+        <p class="hint">
+          Posisikan wajah di tengah dan gunakan pencahayaan yang cukup.
+        </p>
+
+        <canvas id="canvas" hidden></canvas>
+
+        <div class="actions">
+          <button id="capture" hidden>
+            📸 Ambil Foto
+          </button>
+
+          <button id="retake" class="btn-secondary" hidden>
+            ↻ Ulangi Foto
+          </button>
+
+          <button id="send" class="btn-success" hidden>
+            ✓ Kirim Foto ke Absensi
+          </button>
+
+          <button id="close" class="btn-danger">
+            ✕ Tutup Kamera
+          </button>
+        </div>
+      </div>
+
+      <footer class="card-footer">
+        <strong>SMKN 9 Wajo</strong> · Sistem Absensi Siswa
+      </footer>
+    </section>
+
+  </main>
 
   <script>
     const PARENT_ORIGIN = 'https://faozanfcb.github.io';
@@ -51,6 +430,8 @@
     const preview = document.getElementById('preview');
     const canvas = document.getElementById('canvas');
     const statusBox = document.getElementById('status');
+    const statusText = document.getElementById('statusText');
+    const placeholder = document.getElementById('placeholder');
     const captureButton = document.getElementById('capture');
     const retakeButton = document.getElementById('retake');
     const sendButton = document.getElementById('send');
@@ -60,23 +441,34 @@
     let photoData = '';
     let connected = false;
 
+    function setStatus(message) {
+      statusText.textContent = message;
+    }
+
+    function updatePlaceholder() {
+      placeholder.hidden = !video.hidden || !preview.hidden;
+    }
+
     function stopCamera() {
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
         stream = null;
       }
+
       video.srcObject = null;
     }
 
     async function openCamera() {
       if (!navigator.mediaDevices?.getUserMedia) {
-        statusBox.textContent =
-          'Akses kamera tidak tersedia. Pastikan halaman menggunakan HTTPS.';
+        setStatus(
+          'Akses kamera tidak tersedia. Pastikan halaman menggunakan HTTPS.'
+        );
         return;
       }
 
       try {
-        statusBox.textContent = 'Meminta izin kamera...';
+        setStatus('Meminta izin kamera...');
+
         stream = await navigator.mediaDevices.getUserMedia({
           audio: false,
           video: {
@@ -89,58 +481,61 @@
         video.srcObject = stream;
         video.hidden = false;
         preview.hidden = true;
+        updatePlaceholder();
+
         await video.play();
 
         captureButton.hidden = false;
-        statusBox.textContent =
-          'Kamera aktif. Posisikan wajah di tengah, lalu ambil foto.';
+        setStatus(
+          'Kamera aktif. Posisikan wajah di tengah, lalu ambil foto.'
+        );
       } catch (error) {
-        statusBox.textContent =
-          'Kamera gagal dibuka: ' + error.name + '\n' + error.message;
+        setStatus(
+          'Kamera gagal dibuka: ' +
+          error.name + '\n' + error.message
+        );
       }
     }
 
-   
-function isTrustedParentOrigin(origin) {
-  try {
-    const url = new URL(origin);
-    const host = url.hostname;
+    function isTrustedParentOrigin(origin) {
+      try {
+        const url = new URL(origin);
+        const host = url.hostname;
 
-    return url.protocol === 'https:' && (
-      host === 'script.google.com' ||
-      host === 'script.googleusercontent.com' ||
-      host.endsWith('-script.googleusercontent.com') ||
-      host.endsWith('.script.googleusercontent.com')
-    );
-  } catch (error) {
-    return false;
-  }
-}
+        return url.protocol === 'https:' && (
+          host === 'script.google.com' ||
+          host === 'script.googleusercontent.com' ||
+          host.endsWith('-script.googleusercontent.com') ||
+          host.endsWith('.script.googleusercontent.com')
+        );
+      } catch (error) {
+        return false;
+      }
+    }
 
-window.addEventListener('message', async event => {
-  if (event.source !== window.opener) return;
+    window.addEventListener('message', async event => {
+      if (event.source !== window.opener) return;
 
-  if (!isTrustedParentOrigin(event.origin)) {
-    statusBox.textContent =
-      'Pesan ditolak dari alamat: ' + event.origin;
-    return;
-  }
+      if (!isTrustedParentOrigin(event.origin)) {
+        setStatus('Pesan ditolak dari alamat: ' + event.origin);
+        return;
+      }
 
-  if (event.data?.type === 'ABSENSI_START_CAMERA') {
-    connected = true;
-    statusBox.textContent = 'Perintah diterima. Membuka kamera...';
-    await openCamera();
-  }
-});
-
+      if (event.data?.type === 'ABSENSI_START_CAMERA') {
+        connected = true;
+        setStatus('Perintah diterima. Membuka kamera...');
+        await openCamera();
+      }
+    });
 
     captureButton.addEventListener('click', () => {
       if (!stream || !video.videoWidth) {
-        statusBox.textContent = 'Kamera belum siap.';
+        setStatus('Kamera belum siap.');
         return;
       }
 
       const scale = Math.min(1, 1280 / video.videoWidth);
+
       canvas.width = Math.round(video.videoWidth * scale);
       canvas.height = Math.round(video.videoHeight * scale);
 
@@ -149,72 +544,87 @@ window.addEventListener('message', async event => {
       );
 
       photoData = canvas.toDataURL('image/jpeg', 0.75);
+
       preview.src = photoData;
       preview.hidden = false;
       video.hidden = true;
 
+      updatePlaceholder();
       stopCamera();
+
       captureButton.hidden = true;
       retakeButton.hidden = false;
       sendButton.hidden = false;
 
-      statusBox.textContent =
-        'Foto siap ditinjau. Foto belum dikirim atau disimpan.';
+      setStatus(
+        'Foto siap ditinjau. Foto belum dikirim atau disimpan.'
+      );
     });
 
     retakeButton.addEventListener('click', async () => {
       photoData = '';
       preview.removeAttribute('src');
       preview.hidden = true;
+
       retakeButton.hidden = true;
       sendButton.hidden = true;
+
+      updatePlaceholder();
       await openCamera();
     });
 
     sendButton.addEventListener('click', () => {
       if (!connected || !window.opener || !photoData) {
-        statusBox.textContent =
-          'Halaman absensi belum terhubung atau foto belum tersedia.';
+        setStatus(
+          'Halaman absensi belum terhubung atau foto belum tersedia.'
+        );
         return;
       }
 
       window.opener.postMessage({
-  type: 'ABSENSI_PHOTO_CAPTURED',
-  photo: photoData
-}, '*');
+        type: 'ABSENSI_PHOTO_CAPTURED',
+        photo: photoData
+      }, '*');
 
       sendButton.disabled = true;
-statusBox.textContent =
-  'Foto dikirim ke halaman absensi. Menunggu konfirmasi...';
+      setStatus(
+        'Foto dikirim ke halaman absensi. Menunggu konfirmasi...'
+      );
 
-setTimeout(() => {
-  sendButton.disabled = false;
-  if (photoData) {
-    statusBox.textContent +=
-      '\nJika belum ada konfirmasi, kamu dapat mencoba mengirim ulang.';
-  }
-}, 3000);
-      });
+      setTimeout(() => {
+        sendButton.disabled = false;
+
+        if (photoData) {
+          setStatus(
+            'Foto telah dikirim. Jika belum ada konfirmasi, ' +
+            'kamu dapat mencoba mengirim ulang.'
+          );
+        }
+      }, 3000);
+    });
 
     closeButton.addEventListener('click', () => {
       stopCamera();
       window.close();
-      statusBox.textContent = 'Kamera ditutup.';
+      setStatus('Kamera ditutup.');
     });
 
     window.addEventListener('pagehide', stopCamera);
 
-   if (window.opener) {
-  window.opener.postMessage(
-    { type: 'ABSENSI_CAMERA_READY' },
-    '*'
-  );
-  statusBox.textContent =
-    'Halaman kamera terbuka. Menghubungi halaman absensi...';
-} else {
-  statusBox.textContent =
-    'Buka halaman ini melalui tombol di halaman absensi.';
-}
+    if (window.opener) {
+      window.opener.postMessage(
+        { type: 'ABSENSI_CAMERA_READY' },
+        '*'
+      );
+
+      setStatus(
+        'Halaman kamera terbuka. Menghubungi halaman absensi...'
+      );
+    } else {
+      setStatus(
+        'Buka halaman ini melalui tombol di halaman absensi.'
+      );
+    }
   </script>
 </body>
 </html>
