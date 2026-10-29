@@ -540,9 +540,22 @@
       canvas.width = Math.round(video.videoWidth * scale);
       canvas.height = Math.round(video.videoHeight * scale);
 
-      canvas.getContext('2d').drawImage(
-        video, 0, 0, canvas.width, canvas.height
+      const ctx = canvas.getContext('2d');
+
+      // Balik foto secara horizontal
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+      
+      // Gambar kamera ke canvas dalam posisi mirror
+      ctx.drawImage(
+        video,
+        0, 0,
+        canvas.width,
+        canvas.height
       );
+      
+      // Kembalikan transformasi canvas
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
 
       photoData = canvas.toDataURL('image/jpeg', 0.75);
 
