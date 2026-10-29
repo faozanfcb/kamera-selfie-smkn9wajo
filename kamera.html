@@ -184,9 +184,16 @@ window.addEventListener('message', async event => {
 }, '*');
 
       sendButton.disabled = true;
-      statusBox.textContent =
-        'Foto telah dikirim ke halaman pembuka. Tunggu konfirmasi.';
-    });
+statusBox.textContent =
+  'Foto dikirim ke halaman absensi. Menunggu konfirmasi...';
+
+setTimeout(() => {
+  sendButton.disabled = false;
+  if (photoData) {
+    statusBox.textContent +=
+      '\nJika belum ada konfirmasi, kamu dapat mencoba mengirim ulang.';
+  }
+}, 3000);
 
     closeButton.addEventListener('click', () => {
       stopCamera();
