@@ -182,17 +182,17 @@
 
     window.addEventListener('pagehide', stopCamera);
 
-    if (window.opener) {
-      window.opener.postMessage({
-        type: 'ABSENSI_CAMERA_READY'
-      }, PARENT_ORIGIN);
-
-      statusBox.textContent =
-        'Halaman kamera terbuka. Menunggu perintah dari halaman absensi.';
-    } else {
-      statusBox.textContent =
-        'Buka halaman ini melalui tombol di halaman absensi.';
-    }
+   if (window.opener) {
+  window.opener.postMessage(
+    { type: 'ABSENSI_CAMERA_READY' },
+    '*'
+  );
+  statusBox.textContent =
+    'Halaman kamera terbuka. Menghubungi halaman absensi...';
+} else {
+  statusBox.textContent =
+    'Buka halaman ini melalui tombol di halaman absensi.';
+}
   </script>
 </body>
 </html>
