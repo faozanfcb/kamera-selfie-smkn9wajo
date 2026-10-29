@@ -101,7 +101,7 @@
     }
 
     window.addEventListener('message', async event => {
-      if (event.origin !== PARENT_ORIGIN) return;
+      
       if (event.source !== window.opener) return;
 
       if (event.data?.type === 'ABSENSI_START_CAMERA') {
@@ -157,7 +157,7 @@
       window.opener.postMessage({
         type: 'ABSENSI_PHOTO_CAPTURED',
         photo: photoData
-      }, PARENT_ORIGIN);
+      }, *);
 
       sendButton.disabled = true;
       statusBox.textContent =
