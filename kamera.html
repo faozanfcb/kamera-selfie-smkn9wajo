@@ -529,51 +529,59 @@
       }
     });
 
+    
     captureButton.addEventListener('click', () => {
       if (!stream || !video.videoWidth) {
         setStatus('Kamera belum siap.');
         return;
       }
-
+    
       const scale = Math.min(1, 1280 / video.videoWidth);
-
+    
       canvas.width = Math.round(video.videoWidth * scale);
       canvas.height = Math.round(video.videoHeight * scale);
-
+    
       const ctx = canvas.getContext('2d');
-
-      // Balik foto secara horizontal
+    
+      // Filter Soft otomatis: sedikit lebih cerah dan lembut
+      ctx.filter = 'brightness(1.07) saturate(0.92) contrast(0.96)';
+    
+      // Mirror foto secara horizontal
       ctx.translate(canvas.width, 0);
       ctx.scale(-1, 1);
-      
-      // Gambar kamera ke canvas dalam posisi mirror
+    
+      // Gambar kamera ke canvas dengan filter Soft dan mirror
       ctx.drawImage(
         video,
         0, 0,
         canvas.width,
         canvas.height
       );
-      
-      // Kembalikan transformasi canvas
+    
+      // Reset transformasi dan filter canvas
       ctx.setTransform(1, 0, 0, 1, 0, 0);
-
+      ctx.filter = 'none';
+    
+      // Simpan foto hasil filter dalam format JPEG
       photoData = canvas.toDataURL('image/jpeg', 0.75);
-
+    
+      // Tampilkan pratinjau hasil foto
       preview.src = photoData;
       preview.hidden = false;
       video.hidden = true;
-
+    
       updatePlaceholder();
       stopCamera();
-
+    
       captureButton.hidden = true;
       retakeButton.hidden = false;
       sendButton.hidden = false;
-
+    
       setStatus(
         'Foto siap ditinjau. Foto belum dikirim atau disimpan.'
       );
     });
+
 
     retakeButton.addEventListener('click', async () => {
       photoData = '';
